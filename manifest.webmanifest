@@ -1,0 +1,12 @@
+{
+  "name": "Claimmap",
+  "short_name": "Claimmap",
+  "description": "Official doors for money that may already be yours.",
+  "start_url": "/#/",
+  "display": "standalone",
+  "background_color": "#f3eee4",
+  "theme_color": "#0b5f4b",
+  "icons": [
+    { "src": "/icons/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
