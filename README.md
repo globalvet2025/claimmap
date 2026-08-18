@@ -8,4 +8,5 @@ Free educational finder for money that may already be yours.
 
 Not a clone of any commercial ebook. Not legal, tax, or financial advice.
 
-Live: after Vercel deploy, the production URL is the source of truth.
+Live: https://claimmap-seven.vercel.app  
+Repo: https://github.com/globalvet2025/claimmap

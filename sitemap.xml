@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://claimmap.vercel.app/</loc></url>
-  <url><loc>https://claimmap.vercel.app/#/start</loc></url>
-  <url><loc>https://claimmap.vercel.app/#/finder</loc></url>
-  <url><loc>https://claimmap.vercel.app/#/reels</loc></url>
-  <url><loc>https://claimmap.vercel.app/#/week</loc></url>
-  <url><loc>https://claimmap.vercel.app/#/sources</loc></url>
-  <url><loc>https://claimmap.vercel.app/#/about</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/#/start</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/#/finder</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/#/reels</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/#/week</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/#/sources</loc></url>
+  <url><loc>https://claimmap-seven.vercel.app/#/about</loc></url>
 </urlset>
