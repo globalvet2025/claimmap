@@ -13,6 +13,27 @@
 
   function scoreClass(s) { return s >= 4 ? "" : s >= 3 ? "mid" : "low"; }
 
+  function shot(id) { return (window.CM_SHOT || (() => ({ icon: "pin", img: "/img/desk.jpg" })))(id); }
+  function seal(name, extra) {
+    return `<span class="seal ${extra || ""}">${(window.CM_ICON || (() => ""))(name)}</span>`;
+  }
+  function vcard(m) {
+    const v = shot(m.id);
+    return `<a class="vcard" href="#/m/${m.id}">
+      <div class="vcard-shot">
+        <img src="${v.img}" alt="" />
+        <div class="shade"></div>
+        ${seal(v.icon)}
+        <span class="tag ${m.kind}">${m.kind}</span>
+      </div>
+      <div class="vcard-body">
+        <h3>${m.name}</h3>
+        <p>${m.blurb}</p>
+        <div class="stat"><span>${m.cost}</span><span class="score ${scoreClass(m.score)}">Reality ${m.score}/5</span></div>
+      </div>
+    </a>`;
+  }
+
   function headerOn(id) {
     document.querySelectorAll(".tabs a, .bottom a").forEach((a) => {
       a.classList.toggle("on", a.dataset.nav === id);
@@ -21,35 +42,43 @@
 
   function home() {
     headerOn("home");
+    const featured = ["state", "irs", "pbgc", "hud", "va", "hkmpf"]
+      .map((id) => CM_METHODS.find((m) => m.id === id))
+      .filter(Boolean);
     app.innerHTML = `
-      <div class="kicker">Original app · not a $27 PDF</div>
-      <h1>Find the money that is actually yours.</h1>
-      <p class="lede">Official government doors. Honest scores. No “I bought their life for $100.” Educational only — not legal, tax, or financial advice.</p>
-      <div class="pills">
-        <span class="pill">23 methods</span>
-        <span class="pill">50-state official doors</span>
-        <span class="pill">US + Hong Kong</span>
-        <span class="pill">Reel vs reality</span>
-      </div>
-      <div class="cta-row">
-        <a class="cta" href="#/start">Start with where you’ve lived</a>
-        <a class="cta ghost" href="#/finder">Browse all methods</a>
-      </div>
+      <section class="hero-visual">
+        <img src="/img/desk.jpg" alt="Cash and a notebook on a desk" />
+        <div class="hero-copy">
+          <div class="kicker">Official doors · not a $27 PDF</div>
+          <h1>Find the money that is actually yours.</h1>
+          <p class="lede">The Instagram version sells a book. This is the free map: real photos, gold seals, official .gov links. No “I bought their life for $100.”</p>
+          <div class="pills">
+            <span class="pill">23 methods</span>
+            <span class="pill">54 state doors</span>
+            <span class="pill">US + Hong Kong</span>
+          </div>
+          <div class="cta-row">
+            <a class="cta" href="#/start">Start with where you’ve lived</a>
+            <a class="cta ghost" href="#/finder">Browse the pictures</a>
+          </div>
+        </div>
+      </section>
+      <div class="kicker">Start here</div>
+      <h2>The claims that are actually real.</h2>
+      <div class="shot-row">${featured.map(vcard).join("")}</div>
       <div class="row2">
         <div class="box bad">
-          <h3>The $27 reel funnel we beat</h3>
+          <h3>Their reel</h3>
           <ul>
-            <li>First-person fiction, copy-paste chapter mockups</li>
-            <li>Static PDF. No official doors. US-only.</li>
-            <li>Sells you a link that USA.gov already gives away</li>
+            <li>Navy-gold 3D book. Same 4 icons on every chapter.</li>
+            <li>First-person fiction. Static PDF.</li>
           </ul>
         </div>
         <div class="box good">
-          <h3>Claimmap</h3>
+          <h3>This app</h3>
           <ul>
-            <li>Personalized state + HK doors from the NAUPA list</li>
-            <li>Reality score on every method. Closed tools marked closed.</li>
-            <li>This-week checklist stays on your device. We never ask for SSN.</li>
+            <li>A photo + seal for every method. Official door underneath.</li>
+            <li>Reel vs reality, scored. Checklist on your phone.</li>
           </ul>
         </div>
       </div>`;
@@ -63,8 +92,13 @@
         <input type="checkbox" value="${s.id}" ${saved.has(s.id) ? "checked" : ""}/> ${s.name}
       </label>`).join("");
     app.innerHTML = `
-      <div class="kicker">Takes two minutes</div>
-      <h1>Where have you lived or worked?</h1>
+      <div class="banner">
+        <img src="/img/capitol.jpg" alt="Government building" />
+        <div class="ban-copy">
+          <div class="kicker">Takes two minutes</div>
+          <h1>Where have you lived or worked?</h1>
+        </div>
+      </div>
       <p class="lede">Unclaimed property is reported to the holder’s state — often not the state you live in now. Check every one. Then we open the official doors. We do not store this on a server.</p>
       <p class="meta">Tap every US state or territory. Add Hong Kong if you had an MPF job.</p>
       <div class="states" id="state-box">${chips}
@@ -110,11 +144,13 @@
         <a class="ghost" href="https://www.usa.gov/unclaimed-money" target="_blank" rel="noopener">USA.gov index</a>
       </div>
       <div class="grid" style="margin-top:18px">
-        ${us.map((s) => `<a class="card" href="${s.url}" target="_blank" rel="noopener">
+        ${us.map((s) => `<a class="card has-flag" href="${s.url}" target="_blank" rel="noopener">
+          <div class="door-flag">${seal("pin")}</div>
           <span class="tag claim">${s.id}</span><h3>${s.name}</h3>
           <p>Official program listed by NAUPA. Confirm you are on a .gov / state site before you type a name.</p>
         </a>`).join("")}
-        ${hk ? `<a class="card" href="https://www.mpfa.org.hk/en" target="_blank" rel="noopener">
+        ${hk ? `<a class="card has-flag" href="https://www.mpfa.org.hk/en" target="_blank" rel="noopener">
+          <div class="door-flag" style="background-image:url('/img/hongkong.jpg')">${seal("globe")}</div>
           <span class="tag claim">HK</span><h3>Hong Kong MPF</h3>
           <p>Search MPFA / old trustees. Not a Facebook claim agent.</p>
         </a>` : ""}
@@ -177,13 +213,7 @@
         return true;
       }).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
       $("#count").textContent = rows.length + " methods · sorted by reality score";
-      $("#grid").innerHTML = rows.map((m) => `
-        <a class="card" href="#/m/${m.id}">
-          <span class="tag ${m.kind}">${m.kind}</span>
-          <h3>${m.name}</h3>
-          <p>${m.blurb}</p>
-          <div class="stat"><span>${m.cost}</span><span class="score ${scoreClass(m.score)}">Reality ${m.score}/5</span></div>
-        </a>`).join("");
+      $("#grid").innerHTML = rows.map(vcard).join("");
     };
     ["q", "region", "capital", "kind", "honest"].forEach((id) => {
       $("#" + id).addEventListener("input", draw);
@@ -196,9 +226,15 @@
     headerOn("finder");
     const m = CM_METHODS.find((x) => x.id === id);
     if (!m) { nav("#/finder"); return; }
+    const v = shot(m.id);
     document.title = m.name + " — Claimmap";
     app.innerHTML = `
       <div class="kicker"><a href="#/finder">← All methods</a></div>
+      <div class="method-hero">
+        <img src="${v.img}" alt="" />
+        <div class="shade"></div>
+        ${seal(v.icon, "lg")}
+      </div>
       <span class="tag ${m.kind}">${m.kind}</span>
       <h1>${m.name}</h1>
       <p class="lede">${m.blurb}</p>
@@ -222,11 +258,14 @@
       <div class="kicker">Their flaws, corrected</div>
       <h1>Reel hook vs the official story.</h1>
       <p class="lede">We watched the public Wealthivora / copycat scripts. We did not buy their PDF. The one true claim — state unclaimed property — is already free.</p>
-      ${CM_REELS.map((r) => `
+      ${CM_REELS.map((r, i) => `
         <article class="reel">
-          <span class="tag ${r.score >= 4 ? "claim" : r.score >= 3 ? "work" : "warn"}">${r.verdict} · ${r.score}/5</span>
-          <q>${r.hook}</q>
-          <p>${r.truth}</p>
+          <div class="reel-shot"><img src="${(CM_REEL_VISUAL || [])[i] || "/img/desk.jpg"}" alt="" /></div>
+          <div class="reel-body">
+            <span class="tag ${r.score >= 4 ? "claim" : r.score >= 3 ? "work" : "warn"}">${r.verdict} · ${r.score}/5</span>
+            <q>${r.hook}</q>
+            <p>${r.truth}</p>
+          </div>
         </article>`).join("")}`;
   }
 
@@ -239,6 +278,7 @@
       <p class="lede">Free. No capital. If nothing hits, you lost an afternoon — not $27 and a week of paperwork theater.</p>
       <div id="checks">${CM_WEEK.map(([id, label, href]) => `
         <label class="check">
+          ${seal(id === "hk" ? "globe" : id === "nofee" ? "warn" : "search")}
           <input type="checkbox" data-id="${id}" ${saved[id] ? "checked" : ""}/>
           <span>${label}<br><a href="${href}" target="_blank" rel="noopener">Open official site</a></span>
         </label>`).join("")}</div>`;
@@ -277,7 +317,7 @@
           <li>Sell aged corporations, credit stacking, or kitchen-table offshore theater.</li>
         </ul>
       </div>
-      <p class="meta" style="margin-top:18px">Claimmap is independent. Not affiliated with Wealthivora, Gumroad, NAUPA, or any government. Educational only. Programs change — verify on the official site. State URLs sourced from NAUPA’s public directory on 19 Aug 2026.</p>`;
+      <p class="meta" style="margin-top:18px">Claimmap is independent. Not affiliated with Wealthivora, Gumroad, NAUPA, or any government. Educational only. Photos from Unsplash. State URLs sourced from NAUPA’s public directory on 19 Aug 2026. Plain text version saved as git tag <code>v1-civic-plain</code>.</p>`;
   }
 
   function route() {

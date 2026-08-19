@@ -100,3 +100,87 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);f
   }
   .bottom a.on{background:var(--ink);color:var(--paper)}
 }
+
+/* —— visual / Instagram-language layer —— */
+:root{--gold:#c9a56b;--ink2:#0c0d10}
+.ico{width:22px;height:22px;display:block}
+.seal{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(12,13,16,.72);color:var(--gold);border:1px solid rgba(201,165,107,.55);
+  backdrop-filter:blur(8px)
+}
+.seal.lg{width:54px;height:54px}
+.seal.lg .ico{width:26px;height:26px}
+.hero-visual{
+  position:relative;border-radius:24px;overflow:hidden;min-height:460px;margin:6px 0 26px;
+  box-shadow:var(--shadow)
+}
+.hero-visual>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-visual .hero-copy{
+  position:relative;z-index:1;min-height:460px;padding:36px 28px 32px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  color:#f6f1e6;background:linear-gradient(180deg,rgba(12,13,16,.12) 0%,rgba(12,13,16,.82) 78%)
+}
+.hero-visual .kicker{color:var(--gold)}
+.hero-visual h1{color:#fff;max-width:16ch}
+.hero-visual .lede{color:#e8e0d2;max-width:38ch}
+.hero-visual .pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:#f3eee4}
+.hero-visual .cta.ghost{color:#f6f1e6;border-color:rgba(255,255,255,.28)}
+.shot-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 10px}
+.vcard{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  color:inherit;text-decoration:none;display:block;text-align:left;padding:0
+}
+.vcard:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.vcard-shot{position:relative;height:168px;overflow:hidden;background:#1a1714}
+.vcard-shot img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.02)}
+.vcard-shot .shade{
+  position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,13,16,.05),rgba(12,13,16,.45))
+}
+.vcard-shot .seal{position:absolute;left:12px;bottom:12px}
+.vcard-shot .tag{position:absolute;right:12px;top:12px}
+.vcard-body{padding:14px 14px 16px}
+.vcard-body h3{margin:0 0 6px;font-size:20px;line-height:1.15}
+.vcard-body p{margin:0;color:#4a433b;font-size:15px}
+.banner{
+  position:relative;border-radius:20px;overflow:hidden;min-height:200px;margin:0 0 18px
+}
+.banner>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.banner .ban-copy{
+  position:relative;z-index:1;padding:28px 22px;min-height:200px;
+  color:#f6f1e6;background:linear-gradient(90deg,rgba(12,13,16,.78),rgba(12,13,16,.28));
+  display:flex;flex-direction:column;justify-content:flex-end
+}
+.banner .kicker{color:var(--gold)}
+.banner h1,.banner h2{color:#fff;margin:8px 0}
+.method-hero{position:relative;border-radius:20px;overflow:hidden;height:280px;margin:8px 0 18px}
+.method-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.method-hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(12,13,16,.55))}
+.method-hero .seal{position:absolute;left:16px;bottom:16px}
+.reel{
+  display:grid;grid-template-columns:168px 1fr;gap:0;padding:0;overflow:hidden
+}
+.reel-shot{position:relative;min-height:180px;background:#111}
+.reel-shot img{width:100%;height:100%;object-fit:cover;display:block}
+.reel-body{padding:16px 18px}
+.reel q{font-size:20px}
+.check .seal{flex:0 0 42px;margin-top:0;background:#161310;color:var(--gold)}
+.door-flag{
+  height:92px;border-radius:14px 14px 0 0;background:
+    linear-gradient(135deg,#0b5f4b,#1a1714 55%), url("/img/capitol.jpg") center/cover;
+  position:relative
+}
+.door-flag .seal{position:absolute;left:12px;bottom:-16px;background:#161310}
+.card.has-flag{padding-top:0;overflow:hidden}
+.card.has-flag h3{margin-top:22px;padding:0 16px}
+.card.has-flag p,.card.has-flag .tag{margin-left:16px;margin-right:16px}
+.card.has-flag .tag{margin-top:22px;display:inline-block}
+@media(max-width:900px){
+  .shot-row{grid-template-columns:1fr 1fr}
+  .reel{grid-template-columns:1fr}
+  .reel-shot{height:160px}
+}
+@media(max-width:700px){
+  .shot-row{grid-template-columns:1fr}
+  .hero-visual,.hero-visual .hero-copy{min-height:400px}
+}
