@@ -21,7 +21,7 @@
     const v = shot(m.id);
     return `<a class="vcard" href="#/m/${m.id}">
       <div class="vcard-shot">
-        <img src="${v.img}" alt="" />
+        <img src="${v.img}" alt="${m.name}" />
         <div class="shade"></div>
         ${seal(v.icon)}
         <span class="tag ${m.kind}">${m.kind}</span>
@@ -32,6 +32,19 @@
         <div class="stat"><span>${m.cost}</span><span class="score ${scoreClass(m.score)}">Reality ${m.score}/5</span></div>
       </div>
     </a>`;
+  }
+
+  function notFound(msg) {
+    headerOn("");
+    document.title = "Not found — Claimmap";
+    app.innerHTML = `
+      <div class="kicker">404</div>
+      <h1>${msg || "This page is not in Claimmap."}</h1>
+      <p class="lede">The finder, official doors, and this-week checklist are still here.</p>
+      <div class="cta-row">
+        <a class="cta" href="#/">Home</a>
+        <a class="cta ghost" href="#/finder">Browse methods</a>
+      </div>`;
   }
 
   function headerOn(id) {
@@ -100,7 +113,11 @@
         </div>
       </div>
       <p class="lede">Unclaimed property is reported to the holder’s state — often not the state you live in now. Check every one. Then we open the official doors. We do not store this on a server.</p>
-      <p class="meta">Tap every US state or territory. Add Hong Kong if you had an MPF job.</p>
+      <p class="meta">Type to filter. Tap every place you’ve lived or worked. Add Hong Kong if you had an MPF job.</p>
+      <div class="cta-row">
+        <input id="state-q" class="field" placeholder="Filter states…" style="max-width:280px" />
+        <button class="cta ghost" type="button" id="all-us">Select all US</button>
+      </div>
       <div class="states" id="state-box">${chips}
         <label class="${saved.has("HK") ? "on" : ""}"><input type="checkbox" value="HK" ${saved.has("HK") ? "checked" : ""}/> Hong Kong</label>
       </div>
@@ -113,6 +130,19 @@
       const lab = e.target.closest("label");
       if (lab) lab.classList.toggle("on", e.target.checked);
     });
+    $("#state-q").addEventListener("input", () => {
+      const q = $("#state-q").value.toLowerCase();
+      box.querySelectorAll("label").forEach((lab) => {
+        lab.style.display = lab.textContent.toLowerCase().includes(q) ? "" : "none";
+      });
+    });
+    $("#all-us").onclick = () => {
+      box.querySelectorAll("input").forEach((i) => {
+        if (i.value === "HK") return;
+        i.checked = true;
+        i.closest("label").classList.add("on");
+      });
+    };
     $("#save-states").onclick = () => {
       const ids = [...box.querySelectorAll("input:checked")].map((i) => i.value);
       localStorage.setItem(KEY_STATES, JSON.stringify(ids));
@@ -145,12 +175,12 @@
       </div>
       <div class="grid" style="margin-top:18px">
         ${us.map((s) => `<a class="card has-flag" href="${s.url}" target="_blank" rel="noopener">
-          <div class="door-flag">${seal("pin")}</div>
+          <div class="door-flag"><img src="/img/capitol.jpg" alt="" /><span class="seal">${(window.CM_ICON||(()=>""))("pin")}</span></div>
           <span class="tag claim">${s.id}</span><h3>${s.name}</h3>
-          <p>Official program listed by NAUPA. Confirm you are on a .gov / state site before you type a name.</p>
+          <p>Official search. Confirm you are on a .gov / state site before you type a name.</p>
         </a>`).join("")}
         ${hk ? `<a class="card has-flag" href="https://www.mpfa.org.hk/en" target="_blank" rel="noopener">
-          <div class="door-flag" style="background-image:url('/img/hongkong.jpg')">${seal("globe")}</div>
+          <div class="door-flag"><img src="/img/hongkong.jpg" alt="" /><span class="seal">${(window.CM_ICON||(()=>""))("globe")}</span></div>
           <span class="tag claim">HK</span><h3>Hong Kong MPF</h3>
           <p>Search MPFA / old trustees. Not a Facebook claim agent.</p>
         </a>` : ""}
@@ -225,13 +255,13 @@
   function method(id) {
     headerOn("finder");
     const m = CM_METHODS.find((x) => x.id === id);
-    if (!m) { nav("#/finder"); return; }
+    if (!m) { notFound("That method is not in Claimmap."); return; }
     const v = shot(m.id);
     document.title = m.name + " — Claimmap";
     app.innerHTML = `
       <div class="kicker"><a href="#/finder">← All methods</a></div>
       <div class="method-hero">
-        <img src="${v.img}" alt="" />
+        <img src="${v.img}" alt="${m.name}" />
         <div class="shade"></div>
         ${seal(v.icon, "lg")}
       </div>
@@ -272,34 +302,47 @@
   function week() {
     headerOn("week");
     const saved = JSON.parse(localStorage.getItem(KEY_WEEK) || "{}");
+    const done = Object.values(saved).filter(Boolean).length;
     app.innerHTML = `
       <div class="kicker">Do this before any hustle</div>
       <h1>This week’s official sweep.</h1>
       <p class="lede">Free. No capital. If nothing hits, you lost an afternoon — not $27 and a week of paperwork theater.</p>
+      <p class="meta" id="week-count">${done} of ${CM_WEEK.length} checked</p>
       <div id="checks">${CM_WEEK.map(([id, label, href]) => `
         <label class="check">
           ${seal(id === "hk" ? "globe" : id === "nofee" ? "warn" : "search")}
           <input type="checkbox" data-id="${id}" ${saved[id] ? "checked" : ""}/>
           <span>${label}<br><a href="${href}" target="_blank" rel="noopener">Open official site</a></span>
         </label>`).join("")}</div>`;
-    app.addEventListener("change", (e) => {
+    $("#checks").addEventListener("change", (e) => {
       if (!e.target.matches("input[data-id]")) return;
       const cur = JSON.parse(localStorage.getItem(KEY_WEEK) || "{}");
       cur[e.target.dataset.id] = e.target.checked;
       localStorage.setItem(KEY_WEEK, JSON.stringify(cur));
+      const n = Object.values(cur).filter(Boolean).length;
+      const el = $("#week-count");
+      if (el) el.textContent = n + " of " + CM_WEEK.length + " checked";
     });
   }
 
   function sources() {
     headerOn("sources");
     app.innerHTML = `
-      <div class="kicker">Start here, not on a reel</div>
-      <h1>Official indexes</h1>
+      <div class="banner">
+        <img src="/img/tax.jpg" alt="Documents and a calculator" />
+        <div class="ban-copy">
+          <div class="kicker">Start here, not on a reel</div>
+          <h1>Official indexes</h1>
+        </div>
+      </div>
       <p class="lede">USA.gov is explicit: there is no single place to look. Never pay a finder an upfront fee to claim your own money.</p>
-      <table>
-        <thead><tr><th>Door</th><th>What it is</th><th>Link</th></tr></thead>
-        <tbody>${CM_SOURCES.map((s) => `<tr><td>${s[0]}</td><td>${s[1]}</td><td><a href="${s[2]}" target="_blank" rel="noopener">${s[2].replace(/^https?:\/\//,"")}</a></td></tr>`).join("")}</tbody>
-      </table>`;
+      <div class="grid">${CM_SOURCES.map((s) => `
+        <a class="card" href="${s[2]}" target="_blank" rel="noopener">
+          <span class="tag claim">official</span>
+          <h3>${s[0]}</h3>
+          <p>${s[1]}</p>
+          <div class="stat"><span>${s[2].replace(/^https?:\/\//,"")}</span></div>
+        </a>`).join("")}</div>`;
   }
 
   function about() {
@@ -334,7 +377,7 @@
     if (parts[0] === "week") return week();
     if (parts[0] === "sources") return sources();
     if (parts[0] === "about") return about();
-    home();
+    notFound("This page is not in Claimmap.");
   }
 
   window.addEventListener("hashchange", route);
