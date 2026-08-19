@@ -8,5 +8,6 @@ Free educational finder for money that may already be yours.
 
 Not a clone of any commercial ebook. Not legal, tax, or financial advice.
 
-Live: https://claimmap-seven.vercel.app  
-Repo: https://github.com/globalvet2025/claimmap
+Revert the plain text version:
+`git checkout v1-civic-plain`
+or open the folder `~/Projects/claimmap-v1-backup`
